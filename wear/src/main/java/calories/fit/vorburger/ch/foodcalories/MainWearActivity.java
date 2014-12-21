@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.wearable.view.WearableListView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class MainWearActivity extends Activity {
+public class MainWearActivity extends Activity implements WearableListView.ClickListener {
 
     private static final String LOG_TAG = "ch.vorburger.wear.Calories";
     private static final int SPEECH_REQUEST_CODE = 0;
@@ -23,7 +24,9 @@ public class MainWearActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startRecognizeSpeechAction();
+        // startRecognizeSpeechAction();
+        List<Food> apples = foodRepository.find("apple");
+        showPickerView(apples);
     }
 
     private void showMainView(Food food) {
@@ -31,19 +34,28 @@ public class MainWearActivity extends Activity {
         if (food != null) {
             TextView mTextView = (TextView) findViewById(R.id.text);
             totalCaloriesEatenToday += food.calories;
-            String confirmationText = getString(R.string.msg_you_ate) + " " + food.articlePrefix + " " + food.name + " (+" + food.calories + " calories; now " + totalCaloriesEatenToday + "/" + idealMaxCaloriesToday + ")";
+            String confirmationText = getString(R.string.msg_you_ate) + " " + food.articlePrefix + " " + food.name + " (+" + food.calories + " Cals; now " + totalCaloriesEatenToday + "/" + idealMaxCaloriesToday + ")";
             mTextView.setText(confirmationText);
         }
     }
 
     private void showPickerView(List<Food> results) {
+        String[] elements = { "List Item 1", "List Item 2", "List Item 3", "List Item 4", "List Item 5" };
+
         setContentView(R.layout.list);
-        Button button1 = (Button) findViewById(R.id.text1);
-        button1.setText(results.get(0).toString());
-        button1.setTag(results.get(0));
-        Button button2 = (Button) findViewById(R.id.text2);
-        button2.setText(results.get(1).toString());
-        button2.setTag(results.get(1));
+        WearableListView listView = (WearableListView) findViewById(R.id.wearable_list);
+        listView.setAdapter(new WearableListViewAdapter(this, elements));
+        listView.setClickListener(this);
+    }
+
+    @Override
+    public void onClick(WearableListView.ViewHolder v) {
+        Integer tag = (Integer) v.itemView.getTag();
+        Log.e(LOG_TAG, "Multiple choices: " + tag);
+    }
+
+    @Override
+    public void onTopEmptyRegionClick() {
     }
 
     private void startRecognizeSpeechAction() {
@@ -89,10 +101,6 @@ public class MainWearActivity extends Activity {
         }
         // NO } else {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public void onButtonClick(View view) {
-        showMainView((Food) view.getTag());
     }
 
 }

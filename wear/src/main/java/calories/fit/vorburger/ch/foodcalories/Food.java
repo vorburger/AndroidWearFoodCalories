@@ -2,6 +2,8 @@ package calories.fit.vorburger.ch.foodcalories;
 
 public class Food {
 
+    // Icon??
+
     /**
      * Name, e.g. "big Apple"
      */

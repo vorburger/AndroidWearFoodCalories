@@ -6,24 +6,17 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/card_default_background" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/frame_layout"
         android:layout_height="match_parent"
-        android:padding="5dp"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
         app:layout_box="all">
 
-    <Button android:id="@+id/text1" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-         android:text="Aaaaaa"
-         android:onClick="onButtonClick"
-        />
+        <android.support.wearable.view.WearableListView
+            android:id="@+id/wearable_list"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
-    <Button android:id="@+id/text2" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onButtonClick"
-        android:text="Bbbbbb" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </android.support.wearable.view.BoxInsetLayout>
