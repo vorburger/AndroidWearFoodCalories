@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -18,16 +20,31 @@ public class MainWearActivity extends Activity {
     private int totalCaloriesEatenToday = 0;
     private int idealMaxCaloriesToday = 1200;
 
-    private TextView mTextView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_main_wear);
-        mTextView = (TextView) findViewById(R.id.text);
-
+        showMainView(null); // TODO could this be removed?
         startRecognizeSpeechAction();
+    }
+
+    private void showMainView(Food food) {
+        setContentView(R.layout.activity_main_wear);
+        if (food != null) {
+            TextView mTextView = (TextView) findViewById(R.id.text);
+            totalCaloriesEatenToday += food.calories;
+            String confirmationText = getString(R.string.msg_you_ate) + " " + food.articlePrefix + " " + food.name + " (+" + food.calories + " calories; now " + totalCaloriesEatenToday + "/" + idealMaxCaloriesToday + ")";
+            mTextView.setText(confirmationText);
+        }
+    }
+
+    private void showPickerView(List<Food> results) {
+        setContentView(R.layout.list);
+        Button button1 = (Button) findViewById(R.id.text1);
+        button1.setText(results.get(0).toString());
+        button1.setTag(results.get(0));
+        Button button2 = (Button) findViewById(R.id.text2);
+        button2.setText(results.get(1).toString());
+        button2.setTag(results.get(1));
     }
 
     private void startRecognizeSpeechAction() {
@@ -52,17 +69,20 @@ public class MainWearActivity extends Activity {
 
             } else if (results.size() == 1) {
                 Food r = results.get(0);
-                totalCaloriesEatenToday += r.calories;
-                String confirmationText = getString(R.string.msg_you_ate) + " " + r.articlePrefix + r.name + " (+ " + r.calories + " calories; now " + totalCaloriesEatenToday + "/" + idealMaxCaloriesToday + ")";
-                mTextView.setText(confirmationText);
+                showMainView(r);
 
             } else { // results.size() > 1
                 Log.e(LOG_TAG, "Multiple choices: " + results.toString());
-                // TODO multi choice UI...
+                showPickerView(results);
 
             }
         }
         // NO } else {
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    public void onButtonClick(View view) {
+        showMainView((Food) view.getTag());
+    }
+
 }

@@ -20,4 +20,8 @@ public class Food {
         this.calories = calories;
     }
 
+    @Override
+    public String toString() {
+        return articlePrefix + " " + name +  " (" + calories + ")";
+    }
 }
