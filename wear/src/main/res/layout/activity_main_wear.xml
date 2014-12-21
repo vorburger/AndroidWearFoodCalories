@@ -10,7 +10,7 @@
     android:padding="15dp">
     <!-- android:background="@drawable/robot_background" -->
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="5dp"
@@ -19,29 +19,8 @@
         <TextView android:id="@+id/text" android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_centerHorizontal="true"
             android:layout_centerVertical="true" android:text="You ate.."
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
 
-    </FrameLayout>
-<!--
-    <android.support.wearable.view.DelayedConfirmationView
-        android:id="@+id/delayed_confirm"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_full_cancel"
-        app:circle_border_color="@color/blue"
-        app:circle_border_width="4dp"
-        app:circle_radius="16dp" />
--->
+    </RelativeLayout>
 
 </android.support.wearable.view.BoxInsetLayout>
-
-<!-- TODO Remove, before commit
-<android.support.wearable.view.WatchViewStub
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/watch_view_stub"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    app:rectLayout="@layout/rect_activity_main_wear"
-    app:roundLayout="@layout/round_activity_main_wear" tools:context=".MainWearActivity"
-    tools:deviceIds="wear"></android.support.wearable.view.WatchViewStub>
--->
