@@ -58,14 +58,4 @@ public class MainWearActivity extends Activity {
         // NO } else {
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-/*
-    // This Confirmation always disappears immediately :-(
-    protected void showSuccessConfirmation(Context context, String message) {
-        Intent intent = new Intent(context, ConfirmationActivity.class);
-        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.SUCCESS_ANIMATION);
-        intent.putExtra(ConfirmationActivity.EXTRA_MESSAGE, message);
-        context.startActivity(intent);
-    }
- */
 }
