@@ -23,7 +23,6 @@ public class MainWearActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showMainView(null); // TODO could this be removed?
         startRecognizeSpeechAction();
     }
 
@@ -50,7 +49,11 @@ public class MainWearActivity extends Activity {
     private void startRecognizeSpeechAction() {
         // https://developer.android.com/training/wearables/apps/voice.html
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        // TODO Config in companion app to switch between these two modes - which works better for users?
+        // intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10); // This seems to be ignored? TODO, make configurable from companion app?
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "What did you eat?");
         startActivityForResult(intent, SPEECH_REQUEST_CODE);
     }
 
@@ -59,9 +62,16 @@ public class MainWearActivity extends Activity {
         if (requestCode == SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
             // https://developer.android.com/training/wearables/apps/voice.html
             List<String> intentResults = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            String spokenText = intentResults.get(0);
-            Log.i(LOG_TAG, "HEARD: " + spokenText);
+            // https://code.google.com/p/android/issues/detail?id=23606
+            float [] scores = data.getFloatArrayExtra(RecognizerIntent.EXTRA_CONFIDENCE_SCORES);
 
+            for (int i = 0; i < intentResults.size(); i++) {
+                Log.i(LOG_TAG, "HEARD: " + intentResults.get(i) + " (confidence: " + scores[i] + ")");
+            }
+
+            // TODO improve accuracy via a phonetic matching algorithm
+            // TODO consider all possible matches, not just first one, ordered by confidence level?
+            String spokenText = intentResults.get(0);
             List<Food> results = foodRepository.find(spokenText);
             if (results.isEmpty()) {
                 // TODO UI, how to do the "didn't catch that" UI ?
