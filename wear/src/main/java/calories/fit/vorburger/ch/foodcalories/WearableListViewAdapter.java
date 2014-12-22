@@ -7,17 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * @see https://developer.android.com/training/wearables/ui/lists.html
- */
-public class WearableListViewAdapter extends WearableListView.Adapter {
+import java.util.List;
 
-    private String[] mDataset;
+/**
+ * See https://developer.android.com/training/wearables/ui/lists.html
+ */
+public class WearableListViewAdapter<T> extends WearableListView.Adapter {
+
+    private List<T> mDataset;
     private final Context mContext;
     private final LayoutInflater mInflater;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public WearableListViewAdapter(Context context, String[] dataset) {
+    public WearableListViewAdapter(Context context, List<T> dataset) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mDataset = dataset;
@@ -45,14 +47,15 @@ public class WearableListViewAdapter extends WearableListView.Adapter {
         // retrieve the text view
         ItemViewHolder itemHolder = (ItemViewHolder) holder;
         TextView view = itemHolder.textView;
+        T data = mDataset.get(position);
         // replace text contents
-        view.setText(mDataset[position]);
+        view.setText(data.toString());
         // replace list item's metadata
-        holder.itemView.setTag(position);
+        holder.itemView.setTag(data);
     }
 
     // Return the size of your dataset (invoked by the WearableListView's layout manager)
     @Override public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 }

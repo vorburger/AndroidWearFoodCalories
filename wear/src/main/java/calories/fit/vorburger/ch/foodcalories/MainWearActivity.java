@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.wearable.view.WearableListView;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,14 +15,17 @@ public class MainWearActivity extends Activity implements WearableListView.Click
     private static final String LOG_TAG = "ch.vorburger.wear.Calories";
     private static final int SPEECH_REQUEST_CODE = 0;
 
+    private PersistentNamedValuePair<Integer> totalCaloriesEatenToday;
+
     private FoodRepository foodRepository = new FixedFoodRepositoryImpl();
-    private int totalCaloriesEatenToday = 0;
-    private int idealMaxCaloriesToday = 1200;
+    private final int idealMaxCaloriesToday = 1200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        totalCaloriesEatenToday = new PersistentNamedValuePair<>(this, "totalCaloriesEatenToday", 0);
         // startRecognizeSpeechAction();
+        // NO voice, late night dev test, only (and comment out the last line above):
         List<Food> apples = foodRepository.find("apple");
         showPickerView(apples);
     }
@@ -33,25 +34,23 @@ public class MainWearActivity extends Activity implements WearableListView.Click
         setContentView(R.layout.activity_main_wear);
         if (food != null) {
             TextView mTextView = (TextView) findViewById(R.id.text);
-            totalCaloriesEatenToday += food.calories;
-            String confirmationText = getString(R.string.msg_you_ate) + " " + food.articlePrefix + " " + food.name + " (+" + food.calories + " Cals; now " + totalCaloriesEatenToday + "/" + idealMaxCaloriesToday + ")";
+            totalCaloriesEatenToday.setValue(totalCaloriesEatenToday.getValue() + food.calories);
+            String confirmationText = getString(R.string.msg_you_ate) + " " + food.articlePrefix + " " + food.name + " (+" + food.calories + " Cals; now " + totalCaloriesEatenToday.getValue() + "/" + idealMaxCaloriesToday + ")";
             mTextView.setText(confirmationText);
         }
     }
 
     private void showPickerView(List<Food> results) {
-        String[] elements = { "List Item 1", "List Item 2", "List Item 3", "List Item 4", "List Item 5" };
-
         setContentView(R.layout.list);
         WearableListView listView = (WearableListView) findViewById(R.id.wearable_list);
-        listView.setAdapter(new WearableListViewAdapter(this, elements));
+        listView.setAdapter(new WearableListViewAdapter(this, results));
         listView.setClickListener(this);
     }
 
     @Override
     public void onClick(WearableListView.ViewHolder v) {
-        Integer tag = (Integer) v.itemView.getTag();
-        Log.e(LOG_TAG, "Multiple choices: " + tag);
+        Food food = (Food) v.itemView.getTag();
+        showMainView(food);
     }
 
     @Override

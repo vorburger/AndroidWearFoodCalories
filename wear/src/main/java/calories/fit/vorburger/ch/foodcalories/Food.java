@@ -24,6 +24,6 @@ public class Food {
 
     @Override
     public String toString() {
-        return articlePrefix + " " + name +  " (" + calories + ")";
+        return name +  " (" + calories + ")";
     }
 }
