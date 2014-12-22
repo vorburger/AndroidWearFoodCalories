@@ -24,10 +24,10 @@ public class MainWearActivity extends Activity implements WearableListView.Click
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         totalCaloriesEatenToday = new PersistentNamedValuePair<>(this, "totalCaloriesEatenToday", 0);
-        // startRecognizeSpeechAction();
+        startRecognizeSpeechAction();
         // NO voice, late night dev test, only (and comment out the last line above):
-        List<Food> apples = foodRepository.find("apple");
-        showPickerView(apples);
+        //List<Food> apples = foodRepository.find("apple");
+        //showPickerView(apples);
     }
 
     private void showMainView(Food food) {
